@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Hasnain Car Showroom - Receipt Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .login-container p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .receipt-item {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .receipt-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .receipt-reg {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .receipt-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .drive-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #667eea;
+            text-decoration: none;
+            padding: 4px 8px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .drive-link:hover {
+            background: #e0e0e0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .modal-image {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .info-msg {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .setup-code {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .step-section {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .step-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="container">
+        <div class="login-container">
+            <h1>🚗 NEW HASNAIN CAR SHOWROOM</h1>
+            <p>Sale Receipt Digital Book</p>
+            <p style="font-size: 11px; color: #999; margin-top: 8px;">Created by WM</p>
+            
+            <div style="margin-top: 30px;">
+                <div class="error-msg" id="login-error"></div>
+                
+                <div class="form-group" style="text-align: left;">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password">
+                </div>
+                
+                <button class="btn btn-primary" onclick="login()">🔓 Login</button>
+                
+                <div class="info-msg" style="margin-top: 20px; font-size: 12px;">
+                    <strong>📋 First Time Setup Required</strong><br><br>
+                    Before using this system, you need to configure Google Sheets and Google Drive integration.<br><br>
+                    <button class="btn btn-primary" onclick="showSetupInstructions()" style="margin-top: 10px; font-size: 14px;">📖 View Complete Setup Guide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="container hidden">
+        <div class="header">
+            <h1>🚗 NEW HASNAIN CAR SHOWROOM</h1>
+            <p>Sale Receipt Digital Book</p>
+            <p style="font-size: 11px; color: #999; margin-top: 8px;">Created by WM</p>
+            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
+
+        <div class="card">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('upload')">📤 Upload</button>
+                <button class="tab-btn" onclick="switchTab('search')">🔍 Search</button>
+                <button class="tab-btn" onclick="switchTab('all')">📋 All</button>
+            </div>
+
+            <!-- Upload Tab -->
+            <div id="upload-tab" class="tab-content active">
+                <div class="success-msg" id="upload-success"></div>
+                <div class="error-msg" id="upload-error"></div>
+                
+                <div class="form-group">
+                    <label>Car Registration Number *</label>
+                    <input type="text" id="reg-number" placeholder="e.g., ABC-123" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-group">
+                    <label>Selling Date *</label>
+                    <input type="date" id="selling-date">
+                </div>
+
+                <div class="form-group">
+                    <label>Receipt Photo *</label>
+                    <input type="file" id="receipt-photo" accept="image/*">
+                </div>
+
+                <img id="preview" class="preview-image" style="display: none;">
+
+                <button class="btn btn-primary" onclick="uploadReceipt()">💾 Save Receipt</button>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search-tab" class="tab-content">
+                <div class="form-group">
+                    <label>Search by Registration Number</label>
+                    <input type="text" id="search-input" placeholder="e.g., ABC-123" style="text-transform: uppercase;">
+                </div>
+
+                <div class="form-group">
+                    <label>Filter by Selling Date (Optional)</label>
+                    <input type="date" id="search-date">
+                </div>
+
+                <button class="btn btn-primary" onclick="performSearch()">🔍 Search</button>
+
+                <div id="search-results"></div>
+            </div>
+
+            <!-- All Receipts Tab -->
+            <div id="all-tab" class="tab-content">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-receipts">0</div>
+                        <div class="stat-label">Total Receipts</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="loadAllReceipts()" style="margin-bottom: 15px;">🔄 Refresh</button>
+
+                <div id="all-receipts"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing receipt -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">✕ Close</button>
+            <img id="modal-image" class="modal-image">
+            <div style="text-align: center; margin-top: 15px;">
+                <div style="color: white; font-size: 20px; font-weight: 700;" id="modal-reg"></div>
+                <div style="color: white; font-size: 14px; margin-top: 5px;" id="modal-date"></div>
+                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="openDriveLink()" style="width: auto; padding: 10px 20px;" id="drive-btn">📁 View in Drive</button>
+                    <button class="delete-btn" onclick="deleteReceipt()">🗑️ Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Instructions Modal -->
+    <div id="setup-modal" class="modal">
+        <div class="modal-content" style="background: white; padding: 30px; border-radius: 15px; max-height: 90vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeSetupModal()" style="position: static; margin-bottom: 20px;">✕ Close</button>
+            
+            <h2 style="color: #667eea; text-align: center; margin-bottom: 30px;">📋 Complete Setup Guide</h2>
+
+            <div class="step-section">
+                <div class="step-title">STEP 1: Google Drive Folder (✅ COMPLETED)</div>
+                <div class="step-content">
+                    ✅ Your Google Drive folder is already set up!<br><br>
+                    <strong>Folder Link:</strong> <a href="https://drive.google.com/drive/folders/15ldNWulAEkY_vVMijPSerM-gdnURQuCb" target="_blank">Open your Hasnain Receipts folder</a><br>
+                    <strong>Folder ID:</strong> <code style="background: #f0f0f0; padding: 5px;">15ldNWulAEkY_vVMijPSerM-gdnURQuCb</code><br><br>
+                    Make sure this folder is shared with "Anyone with the link" so employees can view receipts.
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-title">STEP 2: Create Google Sheet</div>
+                <div class="step-content">
+                    1. Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a><br>
+                    2. Click "+ Blank" to create new sheet<br>
+                    3. Name it: <strong>"Hasnain Receipt Records"</strong><br>
+                    4. In Row 1, add these exact headers:<br>
+                    &nbsp;&nbsp;&nbsp;• A1: <strong>receiptId</strong><br>
+                    &nbsp;&nbsp;&nbsp;• B1: <strong>regNumber</strong><br>
+                    &nbsp;&nbsp;&nbsp;• C1: <strong>sellingDate</strong><br>
+                    &nbsp;&nbsp;&nbsp;• D1: <strong>driveFileId</strong><br>
+                    &nbsp;&nbsp;&nbsp;• E1: <strong>driveLink</strong><br>
+                    &nbsp;&nbsp;&nbsp;• F1: <strong>timestamp</strong>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-title">STEP 3: Create Google Apps Script</div>
+                <div class="step-content">
+                    1. In your Google Sheet, click: <strong>Extensions → Apps Script</strong><br>
+                    2. Delete any existing code<br>
+                    3. Copy and paste the code below:
+                </div>
+                <div class="setup-code">function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const action = data.action;
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // ✅ Your Google Drive folder ID is already configured!
+    const DRIVE_FOLDER_ID = '15ldNWulAEkY_vVMijPSerM-gdnURQuCb';
+    
+    if (action === 'upload') {
+      // Upload image to Google Drive
+      const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+      const blob = Utilities.newBlob(
+        Utilities.base64Decode(data.imageData.split(',')[1]),
+        data.mimeType,
+        data.fileName
+      );
+      const file = folder.createFile(blob);
+      
+      // Make file publicly viewable
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      
+      // Save metadata to sheet
+      sheet.appendRow([
+        data.receiptId,
+        data.regNumber,
+        data.sellingDate,
+        file.getId(),
+        file.getUrl(),
+        data.timestamp
+      ]);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        fileId: file.getId(),
+        fileUrl: file.getUrl()
+      }));
+    }
+    
+    else if (action === 'getAll') {
+      const rows = sheet.getDataRange().getValues();
+      const receipts = [];
+      
+      for (let i = 1; i < rows.length; i++) {
+        receipts.push({
+          receiptId: rows[i][0],
+          regNumber: rows[i][1],
+          sellingDate: rows[i][2],
+          driveFileId: rows[i][3],
+          driveLink: rows[i][4],
+          timestamp: rows[i][5]
+        });
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        receipts: receipts
+      }));
+    }
+    
+    else if (action === 'delete') {
+      const rows = sheet.getDataRange().getValues();
+      
+      // Delete from Drive
+      try {
+        const file = DriveApp.getFileById(data.driveFileId);
+        file.setTrashed(true);
+      } catch (err) {
+        // File may already be deleted
+      }
+      
+      // Delete from Sheet
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i][0] === data.receiptId) {
+          sheet.deleteRow(i + 1);
+          break;
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({success: true}));
+    }
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
+    }));
+  }
+}</div>
+                <div class="step-content" style="margin-top: 15px;">
+                    4. ✅ The folder ID is already configured in the code above<br>
+                    5. Simply copy and paste this entire code<br>
+                    6. Click "Save" (💾 icon)<br>
+                    7. Click "Deploy" → "New deployment"<br>
+                    8. Click gear icon → "Web app"<br>
+                    9. Set:<br>
+                    &nbsp;&nbsp;&nbsp;• Execute as: <strong>Me</strong><br>
+                    &nbsp;&nbsp;&nbsp;• Who has access: <strong>Anyone</strong><br>
+                    10. Click "Deploy"<br>
+                    11. Click "Authorize access"<br>
+                    12. Choose your Google account<br>
+                    13. Click "Advanced" → "Go to [project name]"<br>
+                    14. Click "Allow"<br>
+                    15. <strong>COPY the Web app URL</strong> (looks like: https://script.google.com/macros/s/ABC.../exec)
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-title">STEP 4: Update This HTML File</div>
+                <div class="step-content">
+                    1. Open this HTML file in a text editor (Notepad, VS Code, etc.)<br>
+                    2. Find the line (around line 15 in the script section):<br>
+                    <code style="background: #f0f0f0; padding: 5px; display: block; margin: 10px 0;">GOOGLE_SCRIPT_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'</code>
+                    3. Replace <strong>YOUR_GOOGLE_APPS_SCRIPT_URL_HERE</strong> with your copied URL<br>
+                    4. Change the password if desired:<br>
+                    <code style="background: #f0f0f0; padding: 5px; display: block; margin: 10px 0;">PASSWORD: 'hasnain123'</code>
+                    5. Save the file
+                </div>
+            </div>
+
+            <div class="step-section">
+                <div class="step-title">STEP 5: Share With Employees</div>
+                <div class="step-content">
+                    1. Upload this HTML file to Google Drive<br>
+                    2. Right-click → "Get link" → "Anyone with link can view"<br>
+                    3. Share the link with all employees<br>
+                    4. Everyone uses the same password to login<br>
+                    5. All receipts are stored in your shared Drive folder!
+                </div>
+            </div>
+
+            <div class="info-msg" style="margin-top: 20px;">
+                <strong>✅ Benefits of This System:</strong><br>
+                • Images stored in Google Drive (unlimited storage on paid plans)<br>
+                • Data stored in Google Sheets (easy to search and export)<br>
+                • Direct links to view receipts in Drive<br>
+                • All employees see the same data in real-time<br>
+                • Can download or delete receipts as needed
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            PASSWORD: 'hasnain123',
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwIDnL6E7JOnf7G0KNCjtl0dUMF3rlzSXyAPfObVlj_myN7UC03KpQo2d5-f4eXVNWuKg/exec'
+        };
+
+        let currentViewingReceipt = null;
+        let allReceiptsCache = [];
+
+        // Check login on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            
+            // Preview image when selected
+            document.getElementById('receipt-photo').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview').src = e.target.result;
+                        document.getElementById('preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Enter key for login
+            document.getElementById('login-password').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+
+        function checkLogin() {
+            const isLoggedIn = sessionStorage.getItem('loggedIn');
+            if (isLoggedIn === 'true') {
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        function login() {
+            const password = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if (password === CONFIG.PASSWORD) {
+                sessionStorage.setItem('loggedIn', 'true');
+                showMainApp();
+            } else {
+                errorMsg.textContent = '❌ Incorrect password';
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('loggedIn');
+            showLoginScreen();
+        }
+
+        function showLoginScreen() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            loadAllReceipts();
+        }
+
+        function showSetupInstructions() {
+            document.getElementById('setup-modal').classList.add('active');
+        }
+
+        function closeSetupModal() {
+            document.getElementById('setup-modal').classList.remove('active');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+
+            if (tab === 'all') {
+                loadAllReceipts();
+            }
+        }
+
+        async function uploadReceipt() {
+            const regNumber = document.getElementById('reg-number').value.trim().toUpperCase();
+            const sellingDate = document.getElementById('selling-date').value;
+            const photoInput = document.getElementById('receipt-photo');
+            const photoFile = photoInput.files[0];
+            
+            const successMsg = document.getElementById('upload-success');
+            const errorMsg = document.getElementById('upload-error');
+            
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+
+            // Validation
+            if (!regNumber) {
+                errorMsg.textContent = 'Please enter registration number';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (!sellingDate) {
+                errorMsg.textContent = 'Please select selling date';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (!photoFile) {
+                errorMsg.textContent = 'Please select a receipt photo';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(photoFile.type)) {
+                errorMsg.textContent = 'Please select a valid image file (JPG, PNG, GIF, WEBP)';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Check file size (10MB limit)
+            if (photoFile.size > 10 * 1024 * 1024) {
+                errorMsg.textContent = 'Image too large. Please use an image under 10MB';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            const uploadBtn = event.target;
+            const originalText = uploadBtn.textContent;
+            uploadBtn.textContent = '⏳ Uploading to Google Drive...';
+            uploadBtn.disabled = true;
+
+            try {
+                // Convert image to base64
+                const imageData = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => reject(new Error('Failed to read image'));
+                    reader.readAsDataURL(photoFile);
+                });
+
+                const receiptId = regNumber + '_' + sellingDate + '_' + Date.now();
+                const fileName = receiptId + '.' + photoFile.name.split('.').pop();
+                
+                const receiptData = {
+                    action: 'upload',
+                    receiptId: receiptId,
+                    regNumber: regNumber,
+                    sellingDate: sellingDate,
+                    imageData: imageData,
+                    fileName: fileName,
+                    mimeType: photoFile.type,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Send to Google Apps Script
+                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(receiptData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    successMsg.textContent = `✓ Receipt saved successfully for ${regNumber} (Date: ${sellingDate}). Image stored in Google Drive.`;
+                    successMsg.style.display = 'block';
+                    
+                    // Clear form
+                    document.getElementById('reg-number').value = '';
+                    document.getElementById('selling-date').value = '';
+                    photoInput.value = '';
+                    document.getElementById('preview').style.display = 'none';
+                    
+                    window.scrollTo(0, 0);
+                } else {
+                    throw new Error(result.error || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.textContent = '✗ Error: ' + error.message + '. Make sure you completed the setup!';
+                errorMsg.style.display = 'block';
+            } finally {
+                uploadBtn.textContent = originalText;
+                uploadBtn.disabled = false;
+            }
+        }
+
+        async function loadAllReceipts() {
+            const allReceiptsDiv = document.getElementById('all-receipts');
+            const totalDiv = document.getElementById('total-receipts');
+            
+            allReceiptsDiv.innerHTML = '<div class="loading">Loading receipts from Google Sheets...</div>';
+
+            try {
+                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAll' })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    allReceiptsCache = result.receipts || [];
+                    
+                    if (allReceiptsCache.length > 0) {
+                        totalDiv.textContent = allReceiptsCache.length;
+                        
+                        allReceiptsCache.sort((a, b) => new Date(b.sellingDate) - new Date(a.sellingDate));
+                        
+                        let html = '';
+                        allReceiptsCache.forEach(receipt => {
+                            const sellingDate = new Date(receipt.sellingDate).toLocaleDateString();
+                            const uploadDate = new Date(receipt.timestamp).toLocaleDateString();
+                            
+                            html += `
+                                <div class="receipt-item" onclick='viewReceiptByData(${JSON.stringify(receipt).replace(/'/g, "&#39;")})'>
+                                    <div class="receipt-reg">${receipt.regNumber}</div>
+                                    <div class="receipt-date">Selling Date: ${sellingDate}</div>
+                                    <div class="receipt-date">Uploaded: ${uploadDate}</div>
+                                    <a href="${receipt.driveLink}" target="_blank" class="drive-link" onclick="event.stopPropagation();">📁 View in Drive</a>
+                                </div>
+                            `;
+                        });
+                        
+                        allReceiptsDiv.innerHTML = html;
+                    } else {
+                        totalDiv.textContent = '0';
+                        allReceiptsDiv.innerHTML = '<div class="no-results">No receipts uploaded yet.<br>Upload your first receipt!</div>';
+                    }
+                } else {
+                    throw new Error(result.error || 'Failed to load receipts');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                allReceiptsDiv.innerHTML = '<div class="no-results">Error loading receipts. Make sure you completed setup!</div>';
+            }
+        }
+
+        async function performSearch() {
+            const searchInput = document.getElementById('search-input').value.trim().toUpperCase();
+            const searchDate = document.getElementById('search-date').value;
+            const resultsDiv = document.getElementById('search-results');
+            
+            if (!searchInput) {
+                resultsDiv.innerHTML = '<div class="no-results">Enter a registration number to search</div>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
+
+            try {
+                if (allReceiptsCache.length === 0) {
+                    await loadAllReceipts();
+                }
+
+                let filteredReceipts = allReceiptsCache.filter(r => r.regNumber === searchInput);
+                
+                if (searchDate) {
+                    filteredReceipts = filteredReceipts.filter(r => r.sellingDate === searchDate);
+                }
+                
+                if (filteredReceipts.length > 0) {
+                    filteredReceipts.sort((a, b) => new Date(b.sellingDate) - new Date(a.sellingDate));
+                    
+                    let html = '';
+                    if (filteredReceipts.length > 1) {
+                        html += `<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                            📋 Found ${filteredReceipts.length} receipts for ${searchInput}
+                        </div>`;
+                    }
+                    
+                    filteredReceipts.forEach(receipt => {
+                        const date = new Date(receipt.sellingDate).toLocaleDateString();
+                        const uploadDate = new Date(receipt.timestamp).toLocaleDateString();
+                        
+                        html += `
+                            <div class="receipt-item" onclick='viewReceiptByData(${JSON.stringify(receipt).replace(/'/g, "&#39;")})'>
+                                <div class="receipt-reg">${receipt.regNumber}</div>
+                                <div class="receipt-date">Selling Date: ${date}</div>
+                                <div class="receipt-date">Uploaded: ${uploadDate}</div>
+                                <a href="${receipt.driveLink}" target="_blank" class="drive-link" onclick="event.stopPropagation();">📁 View in Drive</a>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<div class="no-results">❌ No receipt found</div>';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsDiv.innerHTML = '<div class="no-results">❌ Error searching</div>';
+            }
+        }
+
+        async function viewReceiptByData(receipt) {
+            // Load image from Drive
+            const imageUrl = `https://drive.google.com/uc?export=view&id=${receipt.driveFileId}`;
+            
+            document.getElementById('modal-image').src = imageUrl;
+            document.getElementById('modal-reg').textContent = receipt.regNumber;
+            
+            const sellingDate = new Date(receipt.sellingDate).toLocaleDateString();
+            document.getElementById('modal-date').textContent = 'Selling Date: ' + sellingDate;
+            
+            document.getElementById('modal').classList.add('active');
+            
+            currentViewingReceipt = receipt;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentViewingReceipt = null;
+        }
+
+        function openDriveLink() {
+            if (currentViewingReceipt && currentViewingReceipt.driveLink) {
+                window.open(currentViewingReceipt.driveLink, '_blank');
+            }
+        }
+
+        async function deleteReceipt() {
+            if (!currentViewingReceipt) return;
+            
+            if (confirm('Are you sure you want to delete this receipt? This will remove it from Google Drive and Google Sheets for ALL employees!')) {
+                try {
+                    const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'delete',
+                            receiptId: currentViewingReceipt.receiptId,
+                            driveFileId: currentViewingReceipt.driveFileId
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        closeModal();
+                        loadAllReceipts();
+                        alert('✓ Receipt deleted successfully from Drive and Sheets');
+                    } else {
+                        throw new Error(result.error || 'Delete failed');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error deleting receipt');
+                }
+            }
+        }
+
+        // Close modals on background click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('setup-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSetupModal();
+            }
+        });
+    </script>
+</body>
+</html>
