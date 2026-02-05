@@ -416,12 +416,6 @@
                 </div>
                 
                 <button class="btn btn-primary" onclick="login()">🔓 Login</button>
-                
-                <div class="info-msg" style="margin-top: 20px; font-size: 12px;">
-                    <strong>📋 First Time Setup Required</strong><br><br>
-                    Before using this system, you need to configure Google Sheets and Google Drive integration.<br><br>
-                    <button class="btn btn-primary" onclick="showSetupInstructions()" style="margin-top: 10px; font-size: 14px;">📖 View Complete Setup Guide</button>
-                </div>
             </div>
         </div>
     </div>
@@ -440,6 +434,7 @@
                 <button class="tab-btn active" onclick="switchTab('upload')">📤 Upload</button>
                 <button class="tab-btn" onclick="switchTab('search')">🔍 Search</button>
                 <button class="tab-btn" onclick="switchTab('all')">📋 All</button>
+                <button class="tab-btn" onclick="switchTab('analytics')">📊 Analytics</button>
             </div>
 
             <!-- Upload Tab -->
@@ -455,6 +450,11 @@
                 <div class="form-group">
                     <label>Selling Date *</label>
                     <input type="date" id="selling-date">
+                </div>
+
+                <div class="form-group">
+                    <label>Selling Price (PKR) *</label>
+                    <input type="number" id="selling-price" placeholder="e.g., 2500000" min="0" step="1000">
                 </div>
 
                 <div class="form-group">
@@ -497,6 +497,61 @@
 
                 <div id="all-receipts"></div>
             </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <h3 style="color: #667eea; margin-bottom: 20px; text-align: center;">📊 Sales Analytics</h3>
+
+                <!-- Summary Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700;" id="total-cars">0</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Total Cars Sold</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 20px; border-radius: 10px; color: white; text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700;" id="total-revenue">₨0</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Total Revenue</div>
+                    </div>
+                </div>
+
+                <!-- This Week -->
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">📅 This Week</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Cars Sold</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #667eea;" id="week-cars">0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Revenue</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #11998e;" id="week-revenue">₨0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- This Month -->
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: #667eea; margin-bottom: 15px;">📆 This Month</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Cars Sold</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #667eea;" id="month-cars">0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #666;">Revenue</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #11998e;" id="month-revenue">₨0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Sale -->
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                    <div style="font-size: 12px; color: #856404;">Average Sale Price</div>
+                    <div style="font-size: 28px; font-weight: 700; color: #856404;" id="avg-price">₨0</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateAnalytics()" style="margin-bottom: 15px;">🔄 Refresh Analytics</button>
+            </div>
         </div>
     </div>
 
@@ -516,193 +571,11 @@
         </div>
     </div>
 
-    <!-- Setup Instructions Modal -->
-    <div id="setup-modal" class="modal">
-        <div class="modal-content" style="background: white; padding: 30px; border-radius: 15px; max-height: 90vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeSetupModal()" style="position: static; margin-bottom: 20px;">✕ Close</button>
-            
-            <h2 style="color: #667eea; text-align: center; margin-bottom: 30px;">📋 Complete Setup Guide</h2>
-
-            <div class="step-section">
-                <div class="step-title">STEP 1: Google Drive Folder (✅ COMPLETED)</div>
-                <div class="step-content">
-                    ✅ Your Google Drive folder is already set up!<br><br>
-                    <strong>Folder Link:</strong> <a href="https://drive.google.com/drive/folders/15ldNWulAEkY_vVMijPSerM-gdnURQuCb" target="_blank">Open your Hasnain Receipts folder</a><br>
-                    <strong>Folder ID:</strong> <code style="background: #f0f0f0; padding: 5px;">15ldNWulAEkY_vVMijPSerM-gdnURQuCb</code><br><br>
-                    Make sure this folder is shared with "Anyone with the link" so employees can view receipts.
-                </div>
-            </div>
-
-            <div class="step-section">
-                <div class="step-title">STEP 2: Create Google Sheet</div>
-                <div class="step-content">
-                    1. Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a><br>
-                    2. Click "+ Blank" to create new sheet<br>
-                    3. Name it: <strong>"Hasnain Receipt Records"</strong><br>
-                    4. In Row 1, add these exact headers:<br>
-                    &nbsp;&nbsp;&nbsp;• A1: <strong>receiptId</strong><br>
-                    &nbsp;&nbsp;&nbsp;• B1: <strong>regNumber</strong><br>
-                    &nbsp;&nbsp;&nbsp;• C1: <strong>sellingDate</strong><br>
-                    &nbsp;&nbsp;&nbsp;• D1: <strong>driveFileId</strong><br>
-                    &nbsp;&nbsp;&nbsp;• E1: <strong>driveLink</strong><br>
-                    &nbsp;&nbsp;&nbsp;• F1: <strong>timestamp</strong>
-                </div>
-            </div>
-
-            <div class="step-section">
-                <div class="step-title">STEP 3: Create Google Apps Script</div>
-                <div class="step-content">
-                    1. In your Google Sheet, click: <strong>Extensions → Apps Script</strong><br>
-                    2. Delete any existing code<br>
-                    3. Copy and paste the code below:
-                </div>
-                <div class="setup-code">function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
-    // ✅ Your Google Drive folder ID is already configured!
-    const DRIVE_FOLDER_ID = '15ldNWulAEkY_vVMijPSerM-gdnURQuCb';
-    
-    if (action === 'upload') {
-      // Upload image to Google Drive
-      const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-      const blob = Utilities.newBlob(
-        Utilities.base64Decode(data.imageData.split(',')[1]),
-        data.mimeType,
-        data.fileName
-      );
-      const file = folder.createFile(blob);
-      
-      // Make file publicly viewable
-      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      
-      // Save metadata to sheet
-      sheet.appendRow([
-        data.receiptId,
-        data.regNumber,
-        data.sellingDate,
-        file.getId(),
-        file.getUrl(),
-        data.timestamp
-      ]);
-      
-      return ContentService.createTextOutput(JSON.stringify({
-        success: true,
-        fileId: file.getId(),
-        fileUrl: file.getUrl()
-      }));
-    }
-    
-    else if (action === 'getAll') {
-      const rows = sheet.getDataRange().getValues();
-      const receipts = [];
-      
-      for (let i = 1; i < rows.length; i++) {
-        receipts.push({
-          receiptId: rows[i][0],
-          regNumber: rows[i][1],
-          sellingDate: rows[i][2],
-          driveFileId: rows[i][3],
-          driveLink: rows[i][4],
-          timestamp: rows[i][5]
-        });
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({
-        success: true,
-        receipts: receipts
-      }));
-    }
-    
-    else if (action === 'delete') {
-      const rows = sheet.getDataRange().getValues();
-      
-      // Delete from Drive
-      try {
-        const file = DriveApp.getFileById(data.driveFileId);
-        file.setTrashed(true);
-      } catch (err) {
-        // File may already be deleted
-      }
-      
-      // Delete from Sheet
-      for (let i = 1; i < rows.length; i++) {
-        if (rows[i][0] === data.receiptId) {
-          sheet.deleteRow(i + 1);
-          break;
-        }
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({success: true}));
-    }
-    
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({
-      success: false,
-      error: error.message
-    }));
-  }
-}</div>
-                <div class="step-content" style="margin-top: 15px;">
-                    4. ✅ The folder ID is already configured in the code above<br>
-                    5. Simply copy and paste this entire code<br>
-                    6. Click "Save" (💾 icon)<br>
-                    7. Click "Deploy" → "New deployment"<br>
-                    8. Click gear icon → "Web app"<br>
-                    9. Set:<br>
-                    &nbsp;&nbsp;&nbsp;• Execute as: <strong>Me</strong><br>
-                    &nbsp;&nbsp;&nbsp;• Who has access: <strong>Anyone</strong><br>
-                    10. Click "Deploy"<br>
-                    11. Click "Authorize access"<br>
-                    12. Choose your Google account<br>
-                    13. Click "Advanced" → "Go to [project name]"<br>
-                    14. Click "Allow"<br>
-                    15. <strong>COPY the Web app URL</strong> (looks like: https://script.google.com/macros/s/ABC.../exec)
-                </div>
-            </div>
-
-            <div class="step-section">
-                <div class="step-title">STEP 4: Update This HTML File</div>
-                <div class="step-content">
-                    1. Open this HTML file in a text editor (Notepad, VS Code, etc.)<br>
-                    2. Find the line (around line 15 in the script section):<br>
-                    <code style="background: #f0f0f0; padding: 5px; display: block; margin: 10px 0;">GOOGLE_SCRIPT_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'</code>
-                    3. Replace <strong>YOUR_GOOGLE_APPS_SCRIPT_URL_HERE</strong> with your copied URL<br>
-                    4. Change the password if desired:<br>
-                    <code style="background: #f0f0f0; padding: 5px; display: block; margin: 10px 0;">PASSWORD: 'hasnain123'</code>
-                    5. Save the file
-                </div>
-            </div>
-
-            <div class="step-section">
-                <div class="step-title">STEP 5: Share With Employees</div>
-                <div class="step-content">
-                    1. Upload this HTML file to Google Drive<br>
-                    2. Right-click → "Get link" → "Anyone with link can view"<br>
-                    3. Share the link with all employees<br>
-                    4. Everyone uses the same password to login<br>
-                    5. All receipts are stored in your shared Drive folder!
-                </div>
-            </div>
-
-            <div class="info-msg" style="margin-top: 20px;">
-                <strong>✅ Benefits of This System:</strong><br>
-                • Images stored in Google Drive (unlimited storage on paid plans)<br>
-                • Data stored in Google Sheets (easy to search and export)<br>
-                • Direct links to view receipts in Drive<br>
-                • All employees see the same data in real-time<br>
-                • Can download or delete receipts as needed
-            </div>
-        </div>
-    </div>
-
     <script>
         // Configuration
         const CONFIG = {
             PASSWORD: 'hasnain123',
-            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwIDnL6E7JOnf7G0KNCjtl0dUMF3rlzSXyAPfObVlj_myN7UC03KpQo2d5-f4eXVNWuKg/exec'
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxUq8GjugH4isFx2shaBV60_qugApLPCfwWYUcna10NsVw8-YnLeuMs5j6G2Dr6M1prLQ/exec'
         };
 
         let currentViewingReceipt = null;
@@ -771,14 +644,6 @@
             loadAllReceipts();
         }
 
-        function showSetupInstructions() {
-            document.getElementById('setup-modal').classList.add('active');
-        }
-
-        function closeSetupModal() {
-            document.getElementById('setup-modal').classList.remove('active');
-        }
-
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -788,12 +653,15 @@
 
             if (tab === 'all') {
                 loadAllReceipts();
+            } else if (tab === 'analytics') {
+                calculateAnalytics();
             }
         }
 
         async function uploadReceipt() {
             const regNumber = document.getElementById('reg-number').value.trim().toUpperCase();
             const sellingDate = document.getElementById('selling-date').value;
+            const sellingPrice = document.getElementById('selling-price').value.trim();
             const photoInput = document.getElementById('receipt-photo');
             const photoFile = photoInput.files[0];
             
@@ -812,6 +680,12 @@
 
             if (!sellingDate) {
                 errorMsg.textContent = 'Please select selling date';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (!sellingPrice || parseFloat(sellingPrice) <= 0) {
+                errorMsg.textContent = 'Please enter a valid selling price';
                 errorMsg.style.display = 'block';
                 return;
             }
@@ -859,6 +733,7 @@
                     receiptId: receiptId,
                     regNumber: regNumber,
                     sellingDate: sellingDate,
+                    sellingPrice: parseFloat(sellingPrice),
                     imageData: imageData,
                     fileName: fileName,
                     mimeType: photoFile.type,
@@ -874,12 +749,13 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    successMsg.textContent = `✓ Receipt saved successfully for ${regNumber} (Date: ${sellingDate}). Image stored in Google Drive.`;
+                    successMsg.textContent = `✓ Receipt saved successfully for ${regNumber} (Date: ${sellingDate}, Price: ₨${parseFloat(sellingPrice).toLocaleString()}). Image stored in Google Drive.`;
                     successMsg.style.display = 'block';
                     
                     // Clear form
                     document.getElementById('reg-number').value = '';
                     document.getElementById('selling-date').value = '';
+                    document.getElementById('selling-price').value = '';
                     photoInput.value = '';
                     document.getElementById('preview').style.display = 'none';
                     
@@ -924,11 +800,13 @@
                         allReceiptsCache.forEach(receipt => {
                             const sellingDate = new Date(receipt.sellingDate).toLocaleDateString();
                             const uploadDate = new Date(receipt.timestamp).toLocaleDateString();
+                            const price = receipt.sellingPrice ? `₨${parseFloat(receipt.sellingPrice).toLocaleString()}` : 'N/A';
                             
                             html += `
                                 <div class="receipt-item" onclick='viewReceiptByData(${JSON.stringify(receipt).replace(/'/g, "&#39;")})'>
                                     <div class="receipt-reg">${receipt.regNumber}</div>
                                     <div class="receipt-date">Selling Date: ${sellingDate}</div>
+                                    <div class="receipt-date">Price: ${price}</div>
                                     <div class="receipt-date">Uploaded: ${uploadDate}</div>
                                     <a href="${receipt.driveLink}" target="_blank" class="drive-link" onclick="event.stopPropagation();">📁 View in Drive</a>
                                 </div>
@@ -985,11 +863,13 @@
                     filteredReceipts.forEach(receipt => {
                         const date = new Date(receipt.sellingDate).toLocaleDateString();
                         const uploadDate = new Date(receipt.timestamp).toLocaleDateString();
+                        const price = receipt.sellingPrice ? `₨${parseFloat(receipt.sellingPrice).toLocaleString()}` : 'N/A';
                         
                         html += `
                             <div class="receipt-item" onclick='viewReceiptByData(${JSON.stringify(receipt).replace(/'/g, "&#39;")})'>
                                 <div class="receipt-reg">${receipt.regNumber}</div>
                                 <div class="receipt-date">Selling Date: ${date}</div>
+                                <div class="receipt-date">Price: ${price}</div>
                                 <div class="receipt-date">Uploaded: ${uploadDate}</div>
                                 <a href="${receipt.driveLink}" target="_blank" class="drive-link" onclick="event.stopPropagation();">📁 View in Drive</a>
                             </div>
@@ -1068,16 +948,69 @@
             }
         }
 
+        async function calculateAnalytics() {
+            // Load data if not already loaded
+            if (allReceiptsCache.length === 0) {
+                try {
+                    const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'getAll' })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        allReceiptsCache = result.receipts || [];
+                    }
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    return;
+                }
+            }
+
+            const now = new Date();
+            const receipts = allReceiptsCache;
+
+            // Total calculations
+            const totalCars = receipts.length;
+            const totalRevenue = receipts.reduce((sum, r) => sum + (parseFloat(r.sellingPrice) || 0), 0);
+            const avgPrice = totalCars > 0 ? totalRevenue / totalCars : 0;
+
+            // This week (Monday to Sunday)
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const dayOfWeek = today.getDay();
+            const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() + mondayOffset);
+            
+            const weekReceipts = receipts.filter(r => {
+                const date = new Date(r.sellingDate);
+                return date >= weekStart && date <= now;
+            });
+            const weekCars = weekReceipts.length;
+            const weekRevenue = weekReceipts.reduce((sum, r) => sum + (parseFloat(r.sellingPrice) || 0), 0);
+
+            // This month
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthReceipts = receipts.filter(r => {
+                const date = new Date(r.sellingDate);
+                return date >= monthStart && date <= now;
+            });
+            const monthCars = monthReceipts.length;
+            const monthRevenue = monthReceipts.reduce((sum, r) => sum + (parseFloat(r.sellingPrice) || 0), 0);
+
+            // Update UI
+            document.getElementById('total-cars').textContent = totalCars;
+            document.getElementById('total-revenue').textContent = '₨' + totalRevenue.toLocaleString();
+            document.getElementById('week-cars').textContent = weekCars;
+            document.getElementById('week-revenue').textContent = '₨' + weekRevenue.toLocaleString();
+            document.getElementById('month-cars').textContent = monthCars;
+            document.getElementById('month-revenue').textContent = '₨' + monthRevenue.toLocaleString();
+            document.getElementById('avg-price').textContent = '₨' + Math.round(avgPrice).toLocaleString();
+        }
+
         // Close modals on background click
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
-            }
-        });
-
-        document.getElementById('setup-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSetupModal();
             }
         });
     </script>
