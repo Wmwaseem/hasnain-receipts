@@ -127,7 +127,8 @@
 
         input[type="text"],
         input[type="password"],
-        input[type="date"] {
+        input[type="date"],
+        input[type="number"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -138,7 +139,8 @@
 
         input[type="text"]:focus,
         input[type="password"]:focus,
-        input[type="date"]:focus {
+        input[type="date"]:focus,
+        input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -550,6 +552,28 @@
                     <div style="font-size: 28px; font-weight: 700; color: #856404;" id="avg-price">₨0</div>
                 </div>
 
+                <!-- Yearly Analytics -->
+                <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">📆 Yearly Analytics</h4>
+                    <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                        <input id="year-input" type="number" min="2000" max="2100" style="width:140px; padding:8px;" />
+                        <button class="btn btn-primary" id="show-year-btn" style="width:auto; padding:10px 15px;">🔄 Show Year</button>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div style="background:white; padding:10px; border-radius:8px; text-align:center;">
+                            <div style="font-size: 20px; font-weight:700; color:#667eea;" id="year-cars">0</div>
+                            <div style="font-size:12px; color:#666;">Cars Sold (Year)</div>
+                        </div>
+                        <div style="background:white; padding:10px; border-radius:8px; text-align:center;">
+                            <div style="font-size: 20px; font-weight:700; color:#11998e;" id="year-revenue">₨0</div>
+                            <div style="font-size:12px; color:#666;">Revenue (Year)</div>
+                        </div>
+                    </div>
+
+                    <div id="year-receipts"></div>
+                </div>
+
                 <button class="btn btn-primary" onclick="calculateAnalytics()" style="margin-bottom: 15px;">🔄 Refresh Analytics</button>
             </div>
         </div>
@@ -602,6 +626,17 @@
             document.getElementById('login-password').addEventListener('keyup', function(e) {
                 if (e.key === 'Enter') {
                     login();
+                }
+            });
+
+            // Setup year input default and button
+            const yearInput = document.getElementById('year-input');
+            const currentYear = new Date().getFullYear();
+            yearInput.value = currentYear;
+            document.getElementById('show-year-btn').addEventListener('click', function() {
+                const y = parseInt(yearInput.value, 10);
+                if (!isNaN(y)) {
+                    calculateYearlyStats(y);
                 }
             });
         });
@@ -999,20 +1034,71 @@
 
             // Update UI
             document.getElementById('total-cars').textContent = totalCars;
-            document.getElementById('total-revenue').textContent = '₨' + totalRevenue.toLocaleString();
+            document.getElementById('total-revenue').textContent = `₨${totalRevenue.toLocaleString()}`;
             document.getElementById('week-cars').textContent = weekCars;
-            document.getElementById('week-revenue').textContent = '₨' + weekRevenue.toLocaleString();
+            document.getElementById('week-revenue').textContent = `₨${weekRevenue.toLocaleString()}`;
             document.getElementById('month-cars').textContent = monthCars;
-            document.getElementById('month-revenue').textContent = '₨' + monthRevenue.toLocaleString();
-            document.getElementById('avg-price').textContent = '₨' + Math.round(avgPrice).toLocaleString();
+            document.getElementById('month-revenue').textContent = `₨${monthRevenue.toLocaleString()}`;
+            document.getElementById('avg-price').textContent = `₨${Math.round(avgPrice).toLocaleString()}`;
+
+            // Also calculate for the year currently in year-input
+            const yearInput = document.getElementById('year-input').value;
+            const year = parseInt(yearInput, 10) || new Date().getFullYear();
+            calculateYearlyStats(year);
         }
 
-        // Close modals on background click
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
+        function calculateYearlyStats(year) {
+            if (allReceiptsCache.length === 0) {
+                // ensure data is loaded, then retry
+                loadAllReceipts().then(() => calculateYearlyStats(year)).catch(err => console.error(err));
+                return;
             }
-        });
+
+            const receipts = allReceiptsCache.filter(r => {
+                if (!r.sellingDate) return false;
+                const dt = new Date(r.sellingDate);
+                return dt.getFullYear() === year;
+            });
+
+            const yearCars = receipts.length;
+            const yearRevenue = receipts.reduce((sum, r) => sum + (parseFloat(r.sellingPrice) || 0), 0);
+
+            document.getElementById('year-cars').textContent = yearCars;
+            document.getElementById('year-revenue').textContent = `₨${yearRevenue.toLocaleString()}`;
+
+            renderYearReceipts(receipts);
+        }
+
+        function renderYearReceipts(receipts) {
+            const container = document.getElementById('year-receipts');
+
+            if (!receipts || receipts.length === 0) {
+                container.innerHTML = '<div class="no-results">No sales for the selected year.</div>';
+                return;
+            }
+
+            // Sort by selling date desc
+            receipts.sort((a, b) => new Date(b.sellingDate) - new Date(a.sellingDate));
+
+            let html = '';
+            receipts.forEach(receipt => {
+                const date = new Date(receipt.sellingDate).toLocaleDateString();
+                const uploadDate = receipt.timestamp ? new Date(receipt.timestamp).toLocaleDateString() : '';
+                const price = receipt.sellingPrice ? `₨${parseFloat(receipt.sellingPrice).toLocaleString()}` : 'N/A';
+
+                html += `
+                    <div class="receipt-item" onclick='viewReceiptByData(${JSON.stringify(receipt).replace(/'/g, "&#39;")})'>
+                        <div class="receipt-reg">${receipt.regNumber}</div>
+                        <div class="receipt-date">Selling Date: ${date}</div>
+                        <div class="receipt-date">Price: ${price}</div>
+                        <div class="receipt-date">Uploaded: ${uploadDate}</div>
+                        <a href="${receipt.driveLink}" target="_blank" class="drive-link" onclick="event.stopPropagation();">📁 View in Drive</a>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
