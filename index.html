@@ -1007,10 +1007,16 @@
         }
 
         async function viewReceiptByData(receipt) {
-            // Load image from Drive
-            const imageUrl = `https://drive.google.com/uc?export=view&id=${receipt.driveFileId}`;
+            // Load image from Drive using thumbnail/embed URL
+            // Try multiple URL formats for best compatibility
+            const imageUrl = `https://drive.google.com/thumbnail?id=${receipt.driveFileId}&sz=w1000`;
             
             document.getElementById('modal-image').src = imageUrl;
+            document.getElementById('modal-image').onerror = function() {
+                // Fallback: try uc export URL if thumbnail fails
+                this.src = `https://drive.google.com/uc?export=view&id=${receipt.driveFileId}`;
+            };
+            
             document.getElementById('modal-reg').textContent = receipt.regNumber;
             
             const sellingDate = new Date(receipt.sellingDate).toLocaleDateString();
